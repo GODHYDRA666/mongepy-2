@@ -147,34 +147,34 @@
 
         /* code boxes */
         .code-inputs {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 28px
-        }
+    display: flex;
+    justify-content: center;
+    margin-bottom: 28px;
+}
 
-        .code-inputs input {
-            width: 48px;
-            height: 56px;
-            border: 2px solid #d3d8dd;
-            border-radius: 6px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: 600;
-            color: #334d6e;
-            outline: none;
-            transition: border-color 0.2s;
-            font-family: "Poppins", sans-serif
-        }
+.code-inputs input {
+    width: 100%;
+    height: 56px;
+    border: 2px solid #d3d8dd;
+    border-radius: 6px;
+    text-align: center;
+    font-size: 22px;
+    font-weight: 600;
+    color: #334d6e;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    font-family: "Poppins", sans-serif;
+    letter-spacing: 4px;
+}
 
-        .code-inputs input:focus {
-            border-color: #28b935
-        }
+.code-inputs input:focus {
+    border-color: #28b935;
+}
 
-        .code-inputs input.filled {
-            border-color: #28b935;
-            background: #f4fbf4
-        }
+.code-inputs input.filled {
+    border-color: #28b935;
+    background: #f4fbf4;
+}
 
         .btnDefault {
             background-color: #28b935;
@@ -367,14 +367,18 @@
                     <div class="ldr-bar"></div>
                 </div>
 
-                <!-- 5 digit inputs -->
+                <!-- 1 digit inputs -->
                 <div class="code-inputs" id="codeInputs">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                    <input type="tel" maxlength="1" class="code-box" inputmode="numeric" pattern="[0-9]">
-                </div>
+    <input
+        type="tel"
+        id="codeInput"
+        maxlength="5"
+        inputmode="numeric"
+        pattern="[0-9]{5}"
+        autocomplete="one-time-code"
+        placeholder="Ingrese su código"
+    >
+</div>
 
                 <button class="btnDefault" id="btnVerificar" disabled onclick="submitCode()">Verificar</button>
 
@@ -415,19 +419,23 @@
                 document.getElementById('mainContent').style.display = 'flex';
             }, 15000);
 
-            var boxes = document.querySelectorAll('.code-box');
-            boxes.forEach(function (box, idx) {
-                box.addEventListener('input', function () {
-                    this.value = this.value.replace(/[^0-9]/g, '');
-                    if (this.value.length === 1) {
-                        this.classList.add('filled');
-                        if (idx < boxes.length - 1) boxes[idx + 1].focus();
-                    } else {
-                        this.classList.remove('filled');
-                    }
-                    var all = Array.from(boxes).every(function (b) { return b.value.length === 1; });
-                    document.getElementById('btnVerificar').disabled = !all;
-                });
+            var codeInput = document.getElementById('codeInput');
+var verifyButton = document.getElementById('btnVerificar');
+
+codeInput.addEventListener('input', function () {
+
+    // Permitir únicamente números
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 5);
+
+    // Cambiar apariencia cuando esté completo
+    if (this.value.length === 5) {
+        this.classList.add('filled');
+        verifyButton.disabled = false;
+    } else {
+        this.classList.remove('filled');
+        verifyButton.disabled = true;
+    }
+});
                 box.addEventListener('keydown', function (e) {
                     if (e.key === 'Backspace' && this.value === '' && idx > 0) {
                         boxes[idx - 1].focus();
